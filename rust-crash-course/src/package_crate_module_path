@@ -1,0 +1,66 @@
+PCMF: package, crate, module, path
+
+Package: set of crates, at most one library crate but many binary crates
+
+Crate: set of modules
+
+Module: set of reusable set of code related to each other
+
+Path: 'use ' keyword searchs for modules inside (crates and packages) the paths
+
+
+For instance, to create a package "myapp" with a binary crate:
+
+> cargo new --bin myapp
+
+> cd myapp
+> ls -la
+
+Create a library inside myapp:
+
+> cargo new --lib intutils
+
+> code .
+
+Inside the "myapp/intutils/src/lib.rs" file write:
+
+```
+pub mod addition {
+    pub fn add(a: i32, b: i32) -> i32 {
+        a + b
+    }
+}
+
+pub mod subtraction {
+    pub fn sub(a: i32, b: i32) -> i32 {
+        a - b
+    }
+}
+```
+
+The pub prefix means they are public and ready to be used by other modules, crates.
+
+Inside "myapp/cargo.toml" add the dependencies of intuitls as a crate:
+
+```
+[dependencies]
+intutils = {path = "intutils"}
+```
+
+Inside "myapp/src/main.rs" and import those two modules:
+
+```
+#![deny(clippy::all)]
+
+// path: call the crate::module::function
+use intutils::subtraction::sub;
+use intutils::addition::add;
+
+fn main() {
+    let added = add(1, 2);
+    let subtracted = sub(1, 2);
+    println!("{}", added);
+    println!("{}", subtracted);
+}
+```
+
